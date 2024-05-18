@@ -40,11 +40,11 @@ class CommentCreate(BaseModel):
     image_id: int
 
 
-class CommentResponse(BaseModel):
-    id: int
-    content: str
-    image_id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True
+# class CommentResponse(BaseModel):
+#     id: int
+#     content: str
+#     image_id: int
+#     user_id: int
+#
+#     class Config:
+#         orm_mode = True

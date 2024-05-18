@@ -27,28 +27,27 @@ class ImageCreate(BaseModel):
     url: str
 
 
-class ImageResponse(BaseModel):
-    id: int
-    title: str
-    description: str
-    url: str
-    uploaded_by: int
-    comments: Optional[List['CommentResponse']] = []
-
-    class Config:
-        orm_mode = True
+# class ImageResponse(BaseModel):
+#     id: int
+#     title: str
+#     description: str
+#     url: str
+#     uploaded_by: int
+#     comments: Optional[List['CommentResponse']] = []
+#
+#     class Config:
+#         orm_mode = True
 
 
 class CommentCreate(BaseModel):
     content: str
     image_id: int
 
-
-class CommentResponse(BaseModel):
-    id: int
-    content: str
-    image_id: int
-    user_id: int
-
-    class Config:
-        orm_mode = True
+# class CommentResponse(BaseModel):
+#     id: int
+#     content: str
+#     image_id: int
+#     user_id: int
+#
+#     class Config:
+#         orm_mode = True
