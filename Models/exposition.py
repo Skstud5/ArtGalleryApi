@@ -4,30 +4,30 @@
 import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ExpositionCreate(BaseModel):
     name: str
     description: str
-    start_date: datetime.date
-    end_date: datetime.date
+    start_date: datetime.datetime
+    end_date: datetime.datetime
 
 
 class ExpositionUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
-    start_date: Optional[datetime.date]
-    end_date: Optional[datetime.date]
+    start_date: Optional[datetime.datetime]
+    end_date: Optional[datetime.datetime]
 
 
 class ExpositionResponse(BaseModel):
     id: str
     name: str
     description: str
-    start_date: datetime.date
-    end_date: datetime.date
-    paintings: List[str]
+    start_date: datetime.datetime
+    end_date: datetime.datetime
+    paintings: Optional[List[str]] = Field(default=None)
 
     class Config:
         from_attributes = True
