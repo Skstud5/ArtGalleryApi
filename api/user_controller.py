@@ -44,8 +44,6 @@ async def create(item: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         result = await db.users.insert_one(dump)
         created_item = await db.users.find_one({"_id": result.inserted_id})
         return serialize_model(UserResponse, created_item)
-
-        return user_data
     except Exception as e:
         # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
         error_message = f"An error occurred: {str(e)}"
