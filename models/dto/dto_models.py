@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class UserCreate(BaseModel):
@@ -9,7 +8,7 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: int
+    id: str
     username: str
     email: str
     is_active: bool
@@ -25,11 +24,11 @@ class ImageCreate(BaseModel):
 
 
 class ImageResponse(BaseModel):
-    id: int
+    id: str
     title: str
     description: str
     url: str
-    uploaded_by: int
+    uploaded_by: str
 
     class Config:
         orm_mode = True
@@ -37,14 +36,4 @@ class ImageResponse(BaseModel):
 
 class CommentCreate(BaseModel):
     content: str
-    image_id: int
-
-
-# class CommentResponse(BaseModel):
-#     id: int
-#     content: str
-#     image_id: int
-#     user_id: int
-#
-#     class Config:
-#         orm_mode = True
+    image_id: str
