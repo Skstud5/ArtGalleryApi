@@ -1,0 +1,1 @@
+from .serialize_id import serialize_model
