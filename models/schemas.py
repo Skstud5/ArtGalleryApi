@@ -5,13 +5,12 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    id: int
+    id: str
     username: str
     email: str
-    is_active: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserCreate(BaseModel):
@@ -21,10 +20,10 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: int
+    id: str
     username: str
     email: str
-    is_active: bool
+    hashed_password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
