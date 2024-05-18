@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from pymongo import ReturnDocument
 
 from data_base.database import get_db
-from schemas import UserCreate, UserResponse, UserUpdate
+from Models import UserCreate, UserResponse, UserUpdate
 from security.security import get_password_hash
 from utils import serialize_model
 
