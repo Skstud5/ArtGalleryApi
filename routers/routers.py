@@ -1,10 +1,10 @@
+# from pymongo.database import Database as MongoDBDatabase
+# from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from pymongo.database import Database as MongoDBDatabase
 from data_base.database import get_db
 from models.schemas import UserCreate, UserResponse
-from security.security import create_access_token, authenticate_user, get_password_hash
+from security.security import get_password_hash
 
 router = APIRouter()
 
