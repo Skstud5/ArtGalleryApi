@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pymongo import ReturnDocument
 from data_base.database import get_db
-from Models import ExpositionCreate, ExpositionResponse, ExpositionUpdate
+from models import ExpositionCreate, ExpositionResponse, ExpositionUpdate
 from utils import serialize_model
 
 router = APIRouter()
