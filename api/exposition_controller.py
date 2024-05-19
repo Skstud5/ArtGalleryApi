@@ -34,6 +34,19 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
+@router.get("/paint/{paint_id}", response_description="Получить все выставки, где есть определённая картина", response_model=List[ExpositionResponse])
+async def get_by_paint(paint_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    try:
+        query = {'paintings': {'$in': [paint_id]}}
+        items = await db.expositions.find(query).to_list(1000)
+        return [serialize_model(ExpositionResponse, item) for item in items]
+    except Exception as e:
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        error_message = f"An error occurred: {str(e)}"
+        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
+
+
 @router.post("", response_description="Создать выставку", response_model=ExpositionResponse)
 async def create(item: ExpositionCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:

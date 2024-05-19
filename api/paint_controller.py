@@ -40,6 +40,7 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         if await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Такого пользователя нет")
         dump = item.model_dump()
+        dump["deleted"] = False
         result = await db.paint.insert_one(dump)
         created_item = await db.paint.find_one({"_id": result.inserted_id})
         return serialize_model(PaintResponse, created_item)
@@ -53,11 +54,19 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
 @router.delete("/{id}", response_description="Удалить картину", response_model=str)
 async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
-        result = await db.paint.delete_one({"_id": ObjectId(id)})
-        if result.deleted_count > 0:
-            return "ok"
-        else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        # result = await db.paint.delete_one({"_id": ObjectId(id)})
+        # if result.deleted_count > 0:
+        #     return "ok"
+        # else:
+        #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        updated_item = await db.paint.find_one_and_update(
+            {"_id": ObjectId(id)},
+            {"$set": {'deleted': True}},
+            return_document=ReturnDocument.AFTER,
+        )
+        if updated_item is None:
+            raise HTTPException(status_code=404, detail="Такой картины нет")
+        return "ok"
     except Exception as e:
         # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
         error_message = f"An error occurred: {str(e)}"
