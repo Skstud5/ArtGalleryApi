@@ -5,7 +5,13 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from api import user_router, paint_router, exposition_router
 
-app = FastAPI()
+app = FastAPI(
+    summary="API для картинной галереи",
+    version="0.0.1",
+    contact={
+        "Разработали": "Скрипченко С.Д. и Тайлаков К.Н.",
+    },
+)
 
 app.include_router(user_router, prefix="/users", tags=["users"])
 app.include_router(paint_router, prefix="/paintings", tags=["paintings"])
