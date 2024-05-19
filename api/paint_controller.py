@@ -18,7 +18,6 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         item = await db.paint.find_one({"_id": ObjectId(id)})
         return serialize_model(PaintResponse, item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -30,7 +29,6 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         items = await db.paint.find().to_list(1000)
         return [serialize_model(PaintResponse, item) for item in items]
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -47,7 +45,6 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         created_item = await db.paint.find_one({"_id": result.inserted_id})
         return serialize_model(PaintResponse, created_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -56,11 +53,6 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
 @router.delete("/{id}", summary="Удалить картину", response_model=str)
 async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
-        # result = await db.paint.delete_one({"_id": ObjectId(id)})
-        # if result.deleted_count > 0:
-        #     return "ok"
-        # else:
-        #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         updated_item = await db.paint.find_one_and_update(
             {"_id": ObjectId(id)},
             {"$set": {'deleted': True}},
@@ -70,7 +62,6 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Такой картины нет")
         return "ok"
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -81,7 +72,7 @@ async def update(id: str, item: PaintUpdate, db: AsyncIOMotorDatabase = Depends(
     try:
         if not (item.uploaded_by is None) and (await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Такого пользователя нет")
-        dump = student = {
+        dump = {
         k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
     }
         print(dump)
@@ -94,7 +85,6 @@ async def update(id: str, item: PaintUpdate, db: AsyncIOMotorDatabase = Depends(
             raise HTTPException(status_code=404, detail="Такой картины нет")
         return serialize_model(PaintResponse, updated_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)

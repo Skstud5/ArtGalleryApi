@@ -20,7 +20,6 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         item = await db.users.find_one({"_id": ObjectId(id)})
         return serialize_model(UserResponse, item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -32,7 +31,6 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         items = await db.users.find().to_list(1000)
         return [serialize_model(UserResponse, item) for item in items]
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -47,7 +45,6 @@ async def create(item: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         created_item = await db.users.find_one({"_id": result.inserted_id})
         return serialize_model(UserResponse, created_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -62,7 +59,6 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
@@ -71,7 +67,7 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
 @router.patch("/{id}", summary="Изменить данные о пользователе", response_model=UserResponse)
 async def update(id: str, item: UserUpdate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
-        dump = student = {
+        dump = {
             k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
         }
         print(dump)
@@ -84,7 +80,6 @@ async def update(id: str, item: UserUpdate, db: AsyncIOMotorDatabase = Depends(g
             raise HTTPException(status_code=404, detail="Такого пользователя нет")
         return serialize_model(UserResponse, updated_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
