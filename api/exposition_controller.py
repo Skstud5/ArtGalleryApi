@@ -36,7 +36,8 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.get("/paint/{paint_id}", response_description="Получить все выставки, где есть определённая картина", response_model=List[ExpositionResponse])
+@router.get("/paint/{paint_id}", response_description="Получить все выставки, где есть определённая картина",
+            response_model=List[ExpositionResponse])
 async def get_by_paint(paint_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         query = {'paintings': {'$in': [paint_id]}}
@@ -85,8 +86,8 @@ async def update(id: str, item: ExpositionUpdate, db: AsyncIOMotorDatabase = Dep
         if not (item.uploaded_by is None) and (await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Такого пользователя нет")
         dump = student = {
-        k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
-    }
+            k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
+        }
         print(dump)
         updated_item = await db.expositions.find_one_and_update(
             {"_id": ObjectId(id)},
@@ -103,7 +104,8 @@ async def update(id: str, item: ExpositionUpdate, db: AsyncIOMotorDatabase = Dep
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.post("/add_painting/{exposition_id}/{paint_id}", summary="Добавить картину в выставку", response_model=ExpositionResponse)
+@router.post("/add_painting/{exposition_id}/{paint_id}", summary="Добавить картину в выставку",
+             response_model=ExpositionResponse)
 async def add_painting(exposition_id: str, paint_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.expositions.find_one({"_id": ObjectId(exposition_id)})
@@ -127,7 +129,8 @@ async def add_painting(exposition_id: str, paint_id: str, db: AsyncIOMotorDataba
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.delete("delete_painting/{exposition_id}/{paint_id}", response_description="Удалить картину из выставки", response_model=ExpositionResponse)
+@router.delete("delete_painting/{exposition_id}/{paint_id}", response_description="Удалить картину из выставки",
+               response_model=ExpositionResponse)
 async def delete_painting(exposition_id: str, paint_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.expositions.find_one({"_id": ObjectId(exposition_id)})
