@@ -15,8 +15,9 @@ def setup_logger(log_file='error.log'):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
 
-    # Добавление обработчика к логгеру
-    slogger.addHandler(file_handler)
+    # Добавление обработчика к логгеру, если его нет
+    if not slogger.handlers:
+        slogger.addHandler(file_handler)
 
     return slogger
 
@@ -46,8 +47,9 @@ def log_tests_error(error_msg):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
 
-    # Добавление обработчика к логгеру для тестовых ошибок
-    test_logger.addHandler(file_handler)
+    # Добавление обработчика к логгеру для тестовых ошибок, если его нет
+    if not test_logger.handlers:
+        test_logger.addHandler(file_handler)
 
     # Логирование сообщения об ошибке
     test_logger.error(error_msg)
@@ -68,8 +70,9 @@ def log_tests_info(info_msg):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
 
-    # Добавление обработчика к логгеру для тестовой информации
-    test_logger.addHandler(file_handler)
+    # Добавление обработчика к логгеру для тестовой информации, если его нет
+    if not test_logger.handlers:
+        test_logger.addHandler(file_handler)
 
     # Логирование информационного сообщения
     test_logger.info(info_msg)
