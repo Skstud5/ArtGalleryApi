@@ -7,6 +7,8 @@ from data_base.database import get_db
 from models import ExpositionCreate, ExpositionResponse, ExpositionUpdate
 from utils import serialize_model
 
+from logger.logger import log_error
+
 router = APIRouter()
 
 
@@ -16,9 +18,9 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         item = await db.expositions.find_one({"_id": ObjectId(id)})
         return serialize_model(ExpositionResponse, item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
@@ -28,9 +30,9 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         items = await db.expositions.find().to_list(1000)
         return [serialize_model(ExpositionResponse, item) for item in items]
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
@@ -43,9 +45,9 @@ async def create(item: ExpositionCreate, db: AsyncIOMotorDatabase = Depends(get_
         created_item = await db.expositions.find_one({"_id": result.inserted_id})
         return serialize_model(ExpositionResponse, created_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
@@ -58,9 +60,9 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
@@ -82,9 +84,9 @@ async def update(id: str, item: ExpositionUpdate, db: AsyncIOMotorDatabase = Dep
             raise HTTPException(status_code=404, detail="Такой выставки нет")
         return serialize_model(ExpositionResponse, updated_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
@@ -104,7 +106,7 @@ async def add_painting(exposition_id: str, paint_id: str, db: AsyncIOMotorDataba
         )
         return serialize_model(ExpositionResponse, updated_item)
     except Exception as e:
-        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException с кодом состояния 500
+        # Если произошла ошибка, выводим сообщение об ошибке и возвращаем HTTPException
         error_message = f"An error occurred: {str(e)}"
-        # print(error_message)  # Можно записать ошибку в логи для дальнейшего анализа
+        log_error(f"Произошла ошибка: {str(e)}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
