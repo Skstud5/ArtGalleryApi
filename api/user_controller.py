@@ -12,7 +12,7 @@ from utils import serialize_model
 router = APIRouter()
 
 
-@router.get("/{id}", response_description="Получить пользователя по идентификатору", response_model=UserResponse)
+@router.get("/{id}", summary="Получить пользователя по идентификатору", response_model=UserResponse)
 async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.users.find_one({"_id": ObjectId(id)})
@@ -24,7 +24,7 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.get("", response_description="Получить всех пользователей", response_model=List[UserResponse])
+@router.get("", summary="Получить всех пользователей", response_model=List[UserResponse])
 async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         items = await db.users.find().to_list(1000)
@@ -36,7 +36,7 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.post("", response_description="Создать пользователя", response_model=UserResponse)
+@router.post("", summary="Создать пользователя", response_model=UserResponse)
 async def create(item: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item.password = get_password_hash(item.password)
@@ -51,7 +51,7 @@ async def create(item: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.delete("/{id}", response_description="Удалить пользователя", response_model=str)
+@router.delete("/{id}", summary="Удалить пользователя", response_model=str)
 async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         result = await db.users.delete_one({"_id": ObjectId(id)})
@@ -66,7 +66,7 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.patch("/{id}", response_description="Изменить данные о пользователе", response_model=UserResponse)
+@router.patch("/{id}", summary="Изменить данные о пользователе", response_model=UserResponse)
 async def update(id: str, item: UserUpdate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         dump = student = {

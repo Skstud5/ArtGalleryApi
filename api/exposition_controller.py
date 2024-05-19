@@ -10,7 +10,7 @@ from utils import serialize_model
 router = APIRouter()
 
 
-@router.get("/{id}", response_description="Получить выставку по идентификатору", response_model=ExpositionResponse)
+@router.get("/{id}", summary="Получить выставку по идентификатору", response_model=ExpositionResponse)
 async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.expositions.find_one({"_id": ObjectId(id)})
@@ -22,7 +22,7 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.get("", response_description="Получить все выставки", response_model=List[ExpositionResponse])
+@router.get("", summary="Получить все выставки", response_model=List[ExpositionResponse])
 async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         items = await db.expositions.find().to_list(1000)
@@ -34,7 +34,7 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.post("", response_description="Создать выставку", response_model=ExpositionResponse)
+@router.post("", summary="Создать выставку", response_model=ExpositionResponse)
 async def create(item: ExpositionCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         dump = item.model_dump()
@@ -49,7 +49,7 @@ async def create(item: ExpositionCreate, db: AsyncIOMotorDatabase = Depends(get_
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.delete("/{id}", response_description="Удалить выставку", response_model=str)
+@router.delete("/{id}", summary="Удалить выставку", response_model=str)
 async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         result = await db.expositions.delete_one({"_id": ObjectId(id)})
@@ -64,7 +64,7 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.patch("/{id}", response_description="Изменить данные о выставке", response_model=ExpositionResponse)
+@router.patch("/{id}", summary="Изменить данные о выставке", response_model=ExpositionResponse)
 async def update(id: str, item: ExpositionUpdate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         if not (item.uploaded_by is None) and (await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None):
@@ -88,7 +88,7 @@ async def update(id: str, item: ExpositionUpdate, db: AsyncIOMotorDatabase = Dep
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.post("/add_painting/{exposition_id}/{paint_id}", response_description="Добавить картину", response_model=ExpositionResponse)
+@router.post("/add_painting/{exposition_id}/{paint_id}", summary="Добавить картину", response_model=ExpositionResponse)
 async def add_painting(exposition_id: str, paint_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.expositions.find_one({"_id": ObjectId(exposition_id)})

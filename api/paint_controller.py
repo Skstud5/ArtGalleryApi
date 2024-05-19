@@ -10,7 +10,7 @@ from utils import serialize_model
 router = APIRouter()
 
 
-@router.get("/{id}", response_description="Получить картину по идентификатору", response_model=PaintResponse)
+@router.get("/{id}", summary="Получить картину по идентификатору", response_model=PaintResponse)
 async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         item = await db.paint.find_one({"_id": ObjectId(id)})
@@ -22,7 +22,7 @@ async def get(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.get("", response_description="Получить все картины", response_model=List[PaintResponse])
+@router.get("", summary="Получить все картины", response_model=List[PaintResponse])
 async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         items = await db.paint.find().to_list(1000)
@@ -34,7 +34,7 @@ async def get_all(db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.post("", response_description="Создать картину", response_model=PaintResponse)
+@router.post("", summary="Создать картину", response_model=PaintResponse)
 async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         if await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None:
@@ -50,7 +50,7 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.delete("/{id}", response_description="Удалить картину", response_model=str)
+@router.delete("/{id}", summary="Удалить картину", response_model=str)
 async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         result = await db.paint.delete_one({"_id": ObjectId(id)})
@@ -65,7 +65,7 @@ async def delete(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message)
 
 
-@router.patch("/{id}", response_description="Изменить данные о картине", response_model=PaintResponse)
+@router.patch("/{id}", summary="Изменить данные о картине", response_model=PaintResponse)
 async def update(id: str, item: PaintUpdate, db: AsyncIOMotorDatabase = Depends(get_db)):
     try:
         if not (item.uploaded_by is None) and (await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None):
