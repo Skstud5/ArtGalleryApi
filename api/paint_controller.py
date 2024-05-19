@@ -1,4 +1,5 @@
 from typing import List
+
 from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -44,6 +45,9 @@ async def create(item: PaintCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
         result = await db.paint.insert_one(dump)
         created_item = await db.paint.find_one({"_id": result.inserted_id})
         return serialize_model(PaintResponse, created_item)
+    except HTTPException as e:
+        log_error(f"Произошла ошибка: {str(e)}")
+        raise e
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
         log_error(f"Произошла ошибка: {str(e)}")
@@ -73,8 +77,8 @@ async def update(id: str, item: PaintUpdate, db: AsyncIOMotorDatabase = Depends(
         if not (item.uploaded_by is None) and (await db.users.find_one({'_id': ObjectId(item.uploaded_by)}) is None):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Такого пользователя нет")
         dump = {
-        k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
-    }
+            k: v for k, v in item.model_dump(by_alias=True).items() if v is not None
+        }
         print(dump)
         updated_item = await db.paint.find_one_and_update(
             {"_id": ObjectId(id)},
