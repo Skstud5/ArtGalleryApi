@@ -4,7 +4,7 @@
 import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ExpositionCreate(BaseModel):
@@ -28,7 +28,4 @@ class ExpositionResponse(BaseModel):
     start_date: datetime.datetime
     end_date: datetime.datetime
     paintings: Optional[List[str]] = Field(default=None)
-
-    class Config:
-        from_attributes = True
-
+    model_config = ConfigDict(from_attributes=True)
